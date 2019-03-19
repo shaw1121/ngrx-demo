@@ -6,11 +6,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 
 import { environment } from '../environments/environment'; // Angular CLI environemnt
-import { counterReducer } from './counter.reducer';
+import { counterReducer } from './state/counter.reducer';
 
 import { AppComponent } from './app.component';
 import { MyCounterComponent } from './my-counter/my-counter.component';
-import { MovieEffects } from './movie.effects';
+import { MovieEffects } from './state/movie.effects';
 import { MoviesPageComponent } from './movies-page/movies-page.component';
 
 @NgModule({

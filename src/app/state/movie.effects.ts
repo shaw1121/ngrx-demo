@@ -1,4 +1,4 @@
-import { MoviesService } from './movies.service';
+import { MoviesService } from '../movies.service';
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
