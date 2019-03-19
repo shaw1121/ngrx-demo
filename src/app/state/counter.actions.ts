@@ -17,3 +17,5 @@ export class Decrement implements Action {
 export class Reset implements Action {
     readonly type = ActionTypes.Reset;
 }
+
+export type CounterActions = Increment | Decrement | Reset

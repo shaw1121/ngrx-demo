@@ -10,6 +10,30 @@
 ## Actions
 Actions are one of the main building blocks in NgRx. Actions express unique events that happen throughout your application. From user interaction with the page, external interaction through network requests, and direct interaction with device APIs, these and more events are described with actions.
 
+```ts
+import { Action } from '@ngrx/store';
+
+export enum ActionTypes {
+    Increment = '[Counter Component] Increment',
+    Decrement = '[Counter Component] Decrement',
+    Reset = '[Counter Component] Reset',
+}
+
+export class Increment implements Action {
+    readonly type = ActionTypes.Increment;
+}
+
+export class Decrement implements Action {
+    readonly type = ActionTypes.Decrement;
+}
+
+export class Reset implements Action {
+    readonly type = ActionTypes.Reset;
+}
+
+export type CounterActions = Increment | Decrement | Reset
+```
+
 ## Reducers
 Reducers in NgRx are responsible for handling transitions from one state to the next state in your application. Reducer functions handle these transitions by determining which actions to handle based on the type.
 
@@ -20,6 +44,30 @@ they produce the same output for a given input. They are without side effects an
 * reducer and action when dispatched
 
 When an action is dispatched, all registered reducers receive the action. Whether they handle the action is determined by the switch statement. For this reason, each switch statement always includes a default case that returns the previous state when the reducer function doesn't need to handle the action.
+
+```ts
+import { Action } from '@ngrx/store';
+import { ActionTypes } from './counter.actions';
+
+export const initialState = 0;
+
+// Define a reducer function to handle changes in the counter value based on the provided actions.
+// Reducers规定了行为对应的具体状态变化。它是纯函数，通过接收前一个状态和派发行为返回新对象作为下一个
+// 状态的方式来改变状态，新对象通常用Object.assign和扩展语法来实现。
+export function counterReducer(state = initialState, action: Action) {
+    switch (action.type) {
+        case ActionTypes.Increment: 
+            return state + 1;
+        case ActionTypes.Decrement:
+            return state - 1;
+        case ActionTypes.Reset:
+            return 0;
+        default:
+            return state;
+    }
+}
+
+```
 
 ## Effects
   
@@ -52,6 +100,38 @@ Effects处理外部数据和交互，允许服务具有更少的状态，只执�
 
 例子见：
 movie.effects.ts file
+```ts
+import { MoviesService } from '../movies.service';
+import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { of } from 'rxjs';
+import { map, mergeMap, catchError } from 'rxjs/operators';
+
+// An injectable Actions service that provides an observable stream
+//  of all actions dispatched after the latest state has been reduced.
+@Injectable()
+export class MovieEffects {
+
+  // Observable streams are decorated with metadata using the Effect decorator. The metadata is used to register 
+  // the streams that are subscribed to the store. 
+  // Any action returned from the effect stream is then dispatched back to the Store.
+  @Effect()
+  loadMovies$ = this.actions$.pipe(
+      // The ofType operator takes one more action types as arguments to filter on which actions to act upon.
+      ofType('[Movies Page] Load Movies'), 
+      mergeMap(() => this.moviesService.getAll().pipe(
+          map(movies => ({ type: '[Movies API] Movies Loaded Success', payload: movies })),
+          catchError(() => of({type: '[Movies API] Movies Loaded Error'}))
+        )
+      )
+  );
+
+  constructor(
+    private actions$: Actions,
+    private moviesService: MoviesService
+  ) {}
+}
+```
 
 ```ts
 // pipe操作符源码摘录
@@ -63,7 +143,7 @@ Selectors are pure functions used for obtaining slices of store state.
 
 ```ts
 // selector.d.ts
-// createSelector 函数源码，可连接最多八个选择器，并可传入参数
+// createSelector 函数源码，可看到，该函数可连接最多八个选择器，并可传入参数
 export declare function createSelector<State, S1, S2, Result>(s1: Selector<State, S1>, s2: Selector<State, S2>, projector: (s1: S1, s2: S2) => Result): MemoizedSelector<State, Result>;
 ```
 参数：Selector
@@ -77,7 +157,7 @@ export declare type Selector<T, V> = (state: T) => V;
 export declare type AnyFn = (...args: any[]) => any;
 
 export interface MemoizedSelector<State, Result> extends Selector<State, Result> {
-    release(): void; // 该方法可以将memoized 值置为null，释放选择器，还可以将祖先选择器递归的释放，参见selector-example.ts
+    release(): void; // 该方法可以将memoized 值置为null，释放选择器，还可以将祖先选择器递归的释放，参见selector-example2.ts
     projector: AnyFn; // 映射函数
 }
 ```
@@ -88,13 +168,31 @@ state/selector-example1.ts
 state/selector-example2.ts
 
 ## Store
-store中储存了应用中所有的不可变状态。ngrx/store中的store是RxJS状态的可观察对象，以及行为的观察者。
+Store中储存了应用中所有的不可变状态。ngrx/store中的store是RxJS状态的**可观察对象**，以及行为的**观察者**。
 
 我们可以利用Store来派发行为。当然，我们也可以用Store的select()方法获取可观察对象，然后订阅观察，在状态变化之后做出反应。
 
+Store一般是在构造函数中引入
+```ts
+  constructor(private store: Store<{ count: number }>) {
+    this.count$ = store.pipe(select('count')); // count 已在 app.module中注册过
+  }
+```
+
+```ts
+// Store源码，可以看到它继承自Observable，并且实现了 Observer(观察者)
+export declare class Store<T> extends Observable<T> implements Observer<Action> {
+    select<K = any>(...paths: string[]): Observable<K>; // 获取可观察对象 
+    dispatch<V extends Action = Action>(action: V): void; // 派发行为
+    next(action: Action): void;
+    error(err: any): void;
+    complete(): void;
+    ... 
+}
+```
 
 ## Existd Question:
-类型别名不能被 extends，但是此处为何能够 extends
+1. 类型别名不能被 extends，但是此处为何能够 extends
 
 ```ts
 // _@ngrx_store@7.3.0@@ngrx\store\src\models.d.ts
@@ -111,7 +209,7 @@ export interface MemoizedSelectorWithProps<State, Props, Result> extends Selecto
 
 2. flattening operators ？
 
-有两个Observable，inner and outer, 这个时候，flattening 就意味着将它们压成一个Observable。
+当有两个Observable的时候，inner Observable and outer Observable, 这个时候，flattening 就意味着将它们压成一个Observable。
 
 
 Refer:   
