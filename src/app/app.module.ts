@@ -6,26 +6,36 @@ import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 
 import { environment } from '../environments/environment'; // Angular CLI environemnt
-import { counterReducer } from './counter.reducer';
+import { counterReducer } from './state/counter.reducer';
 
 import { AppComponent } from './app.component';
-import { MyCounterComponent } from './my-counter/my-counter.component';
-import { MovieEffects } from './movie.effects';
-import { MoviesPageComponent } from './movies-page/movies-page.component';
+
+import { META_REDUCERS, APPLICATION_REDUCER } from './app.state';
+import { MyCounterComponent } from './components/my-counter/my-counter.component';
+import { MoviesPageComponent } from './components/movies-page/movies-page.component';
+import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.component';
+import { ProductListComponent } from './components/shopping-cart/product-list/product-list.component';
+import { CartComponent } from './components/shopping-cart/cart/cart.component';
+import { ProductItemComponent } from './components/shopping-cart/product-list/product-item/product-item.component';
+import { ArticleComponent } from './components/article/article.component';
+import { MovieEffects } from './state/movie.effects';
 
 @NgModule({
   declarations: [
     AppComponent,
     MyCounterComponent,
-    MoviesPageComponent
+    MoviesPageComponent,
+    ShoppingCartComponent,
+    ProductListComponent,
+    CartComponent,
+    ProductItemComponent,
+    ArticleComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     EffectsModule.forRoot([MovieEffects]), // 注册 root effects
-    StoreModule.forRoot({ 
-      count: counterReducer
-    }),
+    StoreModule.forRoot(APPLICATION_REDUCER, {metaReducers: META_REDUCERS}),
     // Instrumentation must be imported after importing StoreModule (config is optional)
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states

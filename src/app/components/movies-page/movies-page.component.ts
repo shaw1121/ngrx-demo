@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Movie } from '../movie';
+import { Movie } from 'src/app/models/movie';
 
 
 @Component({

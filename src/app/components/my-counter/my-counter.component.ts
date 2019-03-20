@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Increment, Decrement, Reset } from '../counter.actions';
+import { Increment, Decrement, Reset } from 'src/app/state/counter.actions';
 
 @Component({
   selector: 'app-my-counter',
@@ -12,7 +12,7 @@ export class MyCounterComponent {
   count$: Observable<number>;
 
   constructor(private store: Store<{ count: number }>) {
-    this.count$ = store.pipe(select('count')); // count 已在 app.module中注册过
+    this.count$ = store.pipe(select('count')); // count 已在 app.module中注册过，选择'count'
   }
 
   increment() {
