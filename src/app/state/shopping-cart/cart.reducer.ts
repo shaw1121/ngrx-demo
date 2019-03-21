@@ -9,10 +9,13 @@ const initialState = {
 
 export function cartReducer(state = initialState.addedId, action: CartActions) {
     switch(action.type) {
+        case CartActionTypes.CHECKOUT_REQUEST:
+            return initialState;
         case CartActionTypes.ADD_TO_CART:
+            return 
+        default: 
             return {
-                ...state,
-                product: action.payload
+                // addedId: add
             }
     }
 }
