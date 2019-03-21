@@ -1,0 +1,8 @@
+<p>Effects</p>
+<div *ngFor="let movie of val?.data?.projects">
+  {{ movie.address }}
+</div>
+<button (click)='show()'>show</button>
+<div *ngIf="errorShow">
+    hh
+</div>
