@@ -9,6 +9,6 @@ export class MoviesService {
   constructor (private http: HttpClient) {}
 
   getAll() {
-    return this.http.get('/movies');
+    return this.http.get('https://www.easy-mock.com/mock/5c93528a933c7c3297e514d4/example/mock');
   }
 }

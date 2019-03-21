@@ -1,3 +1,4 @@
+import { MovieActions } from '../movie/movie.actions';
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './counter.actions';
 

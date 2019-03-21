@@ -284,10 +284,14 @@ Effects are where you handle tasks such as fetching data, long-running tasks tha
 Effects 与 Store结合使用时，降低了组件的责任。在大型应用中，这很重要。
 Effects处理外部数据和交互，允许服务具有更少的状态，只执行与外部交互相关的任务。
 
+> 当前理解：Effects 在获取数据后，利用 map 操作符，将数据放在 payload 中，然后将一个新的 action 放在“流”中，当需要state
+> 更改时，action被派发到 Store 中，在那里action可以由reducer进行处理。也就是说，action的异步变化，用Effects进行处理，
+> 但最终，state的变化还是要经过 reducer 进行处理，以返回下一个state。
+
 例子见：
 movie.effects.ts file
 ```ts
-import { MoviesService } from '../movies.service';
+import { MoviesService } from '../service/movies.service';
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
@@ -306,7 +310,13 @@ export class MovieEffects {
       // The ofType operator takes one more action types as arguments to filter on which actions to act upon.
       ofType('[Movies Page] Load Movies'), 
       mergeMap(() => this.moviesService.getAll().pipe(
-          map(movies => ({ type: '[Movies API] Movies Loaded Success', payload: movies })), // 返回新的 actions
+          // The MoviesService#getAll() method returns an observable that maps the movies to a new action on success, 
+          // The action is dispatched to the Store where it can be handled by reducers when a state change is needed
+          map(movies => ({ type: '[Movies API] Movies Loaded Success', payload: movies })),
+          // return an observable of a new action that is dispatched to the Store in case an error occurs whil fetching movies
+          //  The inner observable handles any errors or completions and returns a new observable so that the outer stream does not die. 
+          // You still use the catchError operator to handle error events, but return an observable of a new action that is dispatched to 
+          // the Store.
           catchError(() => of({type: '[Movies API] Movies Loaded Error'}))
         )
       )
@@ -314,8 +324,8 @@ export class MovieEffects {
 
   constructor(
     private actions$: Actions,
-    private moviesService: MoviesService
-  ) { }
+    private moviesService: MoviesService,
+  ) {}
 }
 ```
 
@@ -378,10 +388,25 @@ export interface MemoizedSelectorWithProps<State, Props, Result> extends Selecto
 }
 ```
 
-2. flattening operators ？
+2. [flattening operators](https://medium.com/@luukgruijs/understanding-rxjs-map-mergemap-switchmap-and-concatmap-833fc1fb09ff)
 
 当有两个Observable的时候，inner Observable and outer Observable, 这个时候，flattening 就意味着将它们压成一个Observable。
 
+```ts
+import { of, from } from 'rxjs'; 
+import { map, delay } from 'rxjs/operators';
+
+const getData = (param) => {
+  return of(`retrieved new data with param ${param}`).pipe(
+    delay(1000)
+  )
+}
+
+from([1,2,3,4]).pipe(
+  map(param => getData(param))
+).subscribe(val => console.log(val);
+```
+```
 
 Refer:   
 https://blog.csdn.net/fen747042796/article/details/74840844   

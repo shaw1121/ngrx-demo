@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 
 import { environment } from '../environments/environment'; // Angular CLI environemnt
-import { counterReducer } from './state/counter.reducer';
+import { counterReducer } from './state/counter/counter.reducer';
 
 import { AppComponent } from './app.component';
 
@@ -18,7 +18,7 @@ import { ProductListComponent } from './components/shopping-cart/product-list/pr
 import { CartComponent } from './components/shopping-cart/cart/cart.component';
 import { ProductItemComponent } from './components/shopping-cart/product-list/product-item/product-item.component';
 import { ArticleComponent } from './components/article/article.component';
-import { MovieEffects } from './state/movie.effects';
+import { MovieEffects } from './state/movie/movie.effects';
 
 @NgModule({
   declarations: [
