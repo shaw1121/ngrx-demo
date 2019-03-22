@@ -9,6 +9,8 @@ export const initialState = 0;
 
 export function movieReducer(state = {"old":1}, action: MovieActions) {
     switch (action.type) {
+        case '[Movies Page] Load Movies':
+            return Object.assign(state, {"post": 32})
         case '[Movies API] Movies Loaded Success': 
             return Object.assign(state, action.payload);
         case '[Movies API] Movies Loaded Error': 
