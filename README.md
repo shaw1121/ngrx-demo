@@ -406,7 +406,27 @@ from([1,2,3,4]).pipe(
   map(param => getData(param))
 ).subscribe(val => console.log(val);
 ```
-```
+
+## NgRx Facades
+
+通常，是在 Component 中调用 Ngrx 的那套概念(Select, Store, dispatch actions etc.)，
+
+![before](./src/assets/before.jpeg)
+
+外观模式将 Ngrx 的状态管理不直接暴露给 component, 而是 通过 Facade 统一暴露 Ngrx 的操作，组件只通过与 Facade 的 communicate 实现
+状态的管理
+![after](./src/assets/after.PNG)
+
+参考：
+[NgRx Facades: Pros and Cons](https://auth0.com/blog/ngrx-facades-pros-and-cons/#Implementing-a-Facade)
+[NgRx + Facades: Better State Management](https://medium.com/@thomasburlesonIA/ngrx-facades-better-state-management-82a04b9a1e39?)
+
+Usermanagement 和 iotdatamodelerApplication 都是用的这种模式
+
+## [ngrx-tips-tricks](https://medium.com/angular-in-depth/ngrx-tips-tricks-69feb20a42a7#efb3)
+
+https://medium.com/angular-in-depth/ngrx-tips-tricks-69feb20a42a7#efb3
+
 
 Refer:   
 https://blog.csdn.net/fen747042796/article/details/74840844   
