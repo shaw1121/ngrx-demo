@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 
 import { environment } from '../environments/environment'; // Angular CLI environemnt
-import { counterReducer } from './state/counter/counter.reducer';
 
 import { AppComponent } from './app.component';
 
@@ -35,6 +34,7 @@ import { MovieEffects } from './state/movie/movie.effects';
     BrowserModule,
     HttpClientModule,
     EffectsModule.forRoot([MovieEffects]), // 注册 root effects
+    // The StoreModule.forRoot() method registers the global providers needed to access the Store throughout your application
     StoreModule.forRoot(APPLICATION_REDUCER, {metaReducers: META_REDUCERS}),
     // Instrumentation must be imported after importing StoreModule (config is optional)
     StoreDevtoolsModule.instrument({

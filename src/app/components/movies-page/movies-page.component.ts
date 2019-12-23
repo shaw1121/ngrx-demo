@@ -19,8 +19,10 @@ export class MoviesPageComponent implements OnInit {
   constructor(private store: Store<{ movies: Movie[]}>) { }
 
   ngOnInit() {
-    let data = new postMovies("发送数据组合");
-    this.store.dispatch(data);
+    // let data = new postMovies("发送数据组合");
+    // this.store.dispatch(data);
+
+    this.store.dispatch({ type: '[Movies Page] Load Movies' });
   }
 
   show() {
