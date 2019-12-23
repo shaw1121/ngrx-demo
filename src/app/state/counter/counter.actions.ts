@@ -1,4 +1,4 @@
-import { Action } from '@ngrx/store';
+import { Action, createAction } from '@ngrx/store';
 
 export enum ActionTypes {
     Increment = '[Counter Component] Increment',
@@ -6,9 +6,11 @@ export enum ActionTypes {
     Reset = '[Counter Component] Reset',
 }
 
-export class Increment implements Action {
-    readonly type = ActionTypes.Increment;
-}
+export const increment = createAction(ActionTypes.Increment);
+
+// export class Increment implements Action {
+//     readonly type = ActionTypes.Increment;
+// }
 
 export class Decrement implements Action {
     readonly type = ActionTypes.Decrement;
@@ -18,4 +20,5 @@ export class Reset implements Action {
     readonly type = ActionTypes.Reset;
 }
 
-export type CounterActions = Increment | Decrement | Reset
+// no need now
+// export type CounterActions = Decrement | Reset

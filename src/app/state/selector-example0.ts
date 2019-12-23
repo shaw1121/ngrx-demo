@@ -1,5 +1,21 @@
 import { createSelector } from '@ngrx/store';
 
+// Using a selector for one piece of state
+export interface FeatureState {
+  counter: number;
+}
+ 
+export interface AppState {
+  feature: FeatureState;
+}
+ 
+export const selectFeature = (state: AppState) => state.feature;
+ 
+export const selectFeatureCount = createSelector(
+  selectFeature,
+  (state: FeatureState) => state.counter * 2
+);
+
 // Using selectors for multiple pieces of state
 export interface User {
   id: number;
@@ -23,6 +39,7 @@ export const selectAllBooks = (state: AppState) => state.allBooks;
 export const selectVisibleBooks = createSelector(
   selectUser, // S1
   selectAllBooks, // S2
+
   // projector function
   (selectedUser: User, allBooks: Book[]) => {
     if (selectedUser && allBooks) {
@@ -33,18 +50,3 @@ export const selectVisibleBooks = createSelector(
   }
 );
 
-// Using a selector for one piece of state
-export interface FeatureState {
-  counter: number;
-}
- 
-export interface AppState {
-  feature: FeatureState;
-}
- 
-export const selectFeature = (state: AppState) => state.feature;
- 
-export const selectFeatureCount = createSelector(
-  selectFeature,
-  (state: FeatureState) => state.counter
-);

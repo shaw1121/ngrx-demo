@@ -4,6 +4,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { MoviesService } from 'src/app/service/movies.service';
+import { postMovies } from '../movie/movie.actions'
 
 // An injectable Actions service that provides an observable stream
 //  of all actions dispatched after the latest state has been reduced.
@@ -17,7 +18,8 @@ export class MovieEffects {
   loadMovies$ = this.actions$.pipe(
       // The ofType operator takes one more action types as arguments to filter on which actions to act upon.
       ofType('[Movies Page] Load Movies'), 
-      mergeMap(() => this.moviesService.getAll().pipe(
+      // 会把参数通过 [Movies Page] Load Movies 对应的payload 传到mergeMap中的回调函数
+      mergeMap((action:postMovies) => this.moviesService.getAll(action.payload).pipe(
           // The MoviesService#getAll() method returns an observable that maps the movies to a new action on success, 
           // The action is dispatched to the Store where it can be handled by reducers when a state change is needed
           map(movies => ({ type: '[Movies API] Movies Loaded Success', payload: movies })),

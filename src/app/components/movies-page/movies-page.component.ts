@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Movie } from 'src/app/models/movie';
+import { postMovies } from '../../state/movie/movie.actions'
 
 
 @Component({
@@ -18,6 +19,9 @@ export class MoviesPageComponent implements OnInit {
   constructor(private store: Store<{ movies: Movie[]}>) { }
 
   ngOnInit() {
+    // let data = new postMovies("发送数据组合");
+    // this.store.dispatch(data);
+
     this.store.dispatch({ type: '[Movies Page] Load Movies' });
   }
 

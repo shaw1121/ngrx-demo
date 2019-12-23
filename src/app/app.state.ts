@@ -31,7 +31,6 @@ export const APPLICATION_REDUCER: ActionReducerMap<AppState> = {
     articleState: articleReducer.articleReducer,
     count: counterReducer,
     movie: movieReducer
-
 }
 
 // logger 方法用来打印state、action， Meta-reducers
